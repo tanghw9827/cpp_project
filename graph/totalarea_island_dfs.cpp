@@ -2,7 +2,6 @@
 #include<vector>
 #include<unordered_map>
 #include<list>
-#include<climits>
 
 using namespace std;
 
@@ -29,6 +28,23 @@ int main(){
     }
     vector<vector<int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
     vector<vector<bool>> visited(n, vector<bool>(m, false));
+    int dummy_count = 0;
+    for(int i = 0; i < n; i++){
+        if(grid[i][0] == 1 && !visited[i][0]){
+            dfs(grid, i, 0, visited, directions, dummy_count);
+        }
+        if(grid[i][m - 1] == 1 && !visited[i][m - 1]){
+            dfs(grid, i, m - 1, visited, directions, dummy_count);
+        }
+    }
+    for(int j = 0; j < m; j++){
+        if(grid[0][j] == 1 && !visited[0][j]){
+            dfs(grid, 0, j, visited, directions, dummy_count);
+        }
+        if(grid[n - 1][j] == 1 && !visited[n - 1][j]){
+            dfs(grid, n - 1, j, visited, directions, dummy_count);
+        }
+    }
     int count;
     int result = 0;
     for(int i = 0; i < n; i++){
@@ -36,7 +52,7 @@ int main(){
             if(!visited[i][j] && grid[i][j] == 1){
                 count = 0;
                 dfs(grid, i, j, visited, directions, count);
-                result = max(result, count);
+                result += count;
             }
         }
     }

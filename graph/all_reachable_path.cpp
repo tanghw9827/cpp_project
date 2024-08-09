@@ -34,12 +34,15 @@ int main(){
     int endNode = n;
     path.push_back(startNode);
     dfs(adj, startNode, endNode, path, result);
-    if (result.size() == 0) cout << -1 << endl;
-    for(auto path : result){
-        for(int i = 0; i < path.size() -1; i++){
-            cout << path[i] << " ";
+    if (result.size() == 0) {
+        cout << -1 << endl;
+    } else {
+        for(const auto& path : result){
+            for(int i = 0; i < path.size() - 1; i++){
+                cout << path[i] << " ";
+            }
+            cout << path[path.size() - 1] << endl;
         }
-        cout << path[path.size()-1] << endl;
     }
     return 0;
 }

@@ -11,6 +11,7 @@ void bfs(const vector<vector<int>> &grid, int i, int j, vector<vector<bool>> &vi
     queue<pair<int, int>> que;
     que.push({i, j});
     visited[i][j] = true;
+    count++;
     while(!que.empty()){
         pair<int, int> p = que.front();
         que.pop();
@@ -20,6 +21,7 @@ void bfs(const vector<vector<int>> &grid, int i, int j, vector<vector<bool>> &vi
             if(new_i >= 0 && new_i < grid.size() && new_j >= 0 && new_j < grid[0].size() && !visited[new_i][new_j] && grid[new_i][new_j] == 1){
                 que.push({new_i, new_j});
                 visited[new_i][new_j] = true;
+                count++;
             }
         }
     }
@@ -42,7 +44,7 @@ int main(){
         for(int j = 0; j < m; j++){
             if(!visited[i][j] && grid[i][j] == 1){
                 count = 0;
-                dfs(grid, i, j, visited, directions, count);
+                bfs(grid, i, j, visited, directions, count);
                 result = max(result, count);
             }
         }
