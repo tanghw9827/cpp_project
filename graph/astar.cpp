@@ -5,6 +5,7 @@
 #include<climits>
 #include<memory>
 #include<cmath>
+#include<algorithm>
 
 using namespace std;
 

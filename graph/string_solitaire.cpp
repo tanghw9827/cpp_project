@@ -1,86 +1,75 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <string>
-#include <queue>
-#include <memory>
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<unordered_map>
+#include<unordered_set>
+#include<algorithm>
 
 using namespace std;
 
-struct Node
-{
-    string word;
-    shared_ptr<Node> parent;
-    Node(string word, shared_ptr<Node> parent = nullptr) : word(word), parent(parent) {}
+struct Node{
+  string node;
+  int g;
+  Node(string node, int g):node(node),g(g){}
 };
 
-bool isStringValid(const string& word1, const string& word2)
-{
-    int count = 0;
-    for (int i = 0; i < word1.size(); i++)
-    {
-        if (word1[i] != word2[i])
-        {
-            count++;
-            if (count > 1) return false;
+struct cmp{
+    bool operator()(Node* n1, Node* n2){
+        return n1->g > n2->g;
+    }
+};
+
+bool isValid(string cur, string next){
+    if(cur.size() != next.size()){
+        return false;
+    }
+    int diff = 0;
+    for(int i = 0; i < cur.size(); i++){
+        if(cur[i] != next[i]){
+            diff++;
+            if (diff > 1) return false;
         }
     }
-    return count == 1;
+    return diff == 1;
 }
 
-void bfs(const unordered_set<string>& words, const string& startNode, const string& endNode, int& result)
-{
-    queue<shared_ptr<Node>> que; 
+void bfs(unordered_set<string>& grid, string& startNode, string& endNode, int& result){
+    priority_queue<Node*, vector<Node*>, cmp> pq;
     unordered_set<string> visited; 
-    que.push(make_shared<Node>(startNode)); 
-    while (!que.empty()) 
-    {
-        shared_ptr<Node> node = que.front(); 
-        que.pop();
-
-        if (node->word == endNode) 
-        {
-            while (node)
-            {
-                result++; 
-                node = node->parent; 
-            }
+    Node* start = new Node(startNode, 1);
+    pq.push(start);
+    while(!pq.empty()){
+        Node* cur = pq.top();
+        pq.pop();
+        if(cur->node == endNode){
+            result = cur->g;
             return;
         }
-
-        visited.insert(node->word);
-
-        for (const auto& word : words)
-        {
-            if (isStringValid(word, node->word) && visited.find(word) == visited.end())
-            {
-                que.push(make_shared<Node>(word, node)); 
+        visited.insert(cur->node);
+        for(auto& word : grid){
+            if(!visited.count(word) && isValid(cur->node, word)){
+                Node* next = new Node(word, cur->g + 1);
+                pq.push(next);
             }
         }
     }
 }
 
-int main()
-{
+int main(){
     int n;
-    cin >> n; 
+    cin >> n;
     string startNode, endNode;
-    cin >> startNode >> endNode; 
-    unordered_set<string> words; 
-    string word;
-
-    for (int i = 0; i < n; i++)
-    {
-        cin >> word;
-        words.insert(word); 
+    cin >> startNode >> endNode;
+    unordered_set<string> grid;
+    string node;
+    for(int i = 0; i < n; i++){
+        cin >> node;
+        grid.insert(node);
     }
-
-    words.insert(startNode);
-    words.insert(endNode);
-
+    grid.insert(startNode);
+    grid.insert(endNode);
     int result = 0;
-    bfs(words, startNode, endNode, result); 
+    bfs(grid, startNode, endNode, result);
     cout << result << endl;
-
     return 0;
 }
